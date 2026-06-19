@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Register – Agha Brothers{% endblock %}
+{% block head %}<style>.auth-pg{min-height:calc(100vh - 160px);display:flex;align-items:center;justify-content:center;padding:3rem 1rem;background:linear-gradient(135deg,var(--navy),var(--navy2));}.auth-box{background:#fff;border-radius:16px;padding:2.5rem;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.3);}.auth-logo{text-align:center;margin-bottom:2rem;}.auth-logo img{height:55px;}.fg{margin-bottom:1rem;}.fg label{display:block;font-size:.82rem;font-weight:600;color:var(--gray-800);margin-bottom:.3rem;}.fg input,.fg textarea{width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.87rem;outline:none;font-family:inherit;}.fg input:focus,.fg textarea:focus{border-color:var(--blue2);}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}.auth-btn{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:.93rem;font-weight:700;cursor:pointer;margin-top:.3rem;}.auth-btn:hover{background:var(--blue2);}.auth-alt{text-align:center;font-size:.82rem;color:var(--gray-600);margin-top:1rem;}.auth-alt a{color:var(--blue2);font-weight:600;}</style>{% endblock %}
+{% block content %}
+<div class="auth-pg">
+  <div class="auth-box">
+    <div class="auth-logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Agha Brothers"><p style="font-size:.8rem;color:var(--gray-600);margin-top:.4rem;">Create your account</p></div>
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="two-col">
+        <div class="fg"><label>Full Name *</label><input type="text" name="name" required placeholder="Your name"></div>
+        <div class="fg"><label>Phone</label><input type="text" name="phone" placeholder="+92-3XX-XXXXXXX"></div>
+      </div>
+      <div class="fg"><label>Email Address *</label><input type="email" name="email" required placeholder="your@email.com"></div>
+      <div class="fg"><label>Password *</label><input type="password" name="password" required placeholder="Min 8 characters"></div>   <!-- Fixed hint -->
+      <div class="fg"><label>Delivery Address</label><textarea name="address" rows="2" placeholder="Street, City, Province"></textarea></div>
+      <button type="submit" class="auth-btn"><i class="fas fa-user-plus"></i> Create Account</button>
+    </form>
+    <p class="auth-alt">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+  </div>
+</div>
+{% endblock %}

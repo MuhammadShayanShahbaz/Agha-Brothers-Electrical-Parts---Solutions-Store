@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Profile – Agha Brothers{% endblock %}
+{% block content %}
+<div style="max-width:580px;margin:2rem auto;padding:0 1.5rem;">
+  <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:1.9rem;color:var(--navy);margin-bottom:1.5rem;"><i class="fas fa-user-circle"></i> My Profile</h1>
+  <div style="background:#fff;border-radius:14px;padding:2rem;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1.5px solid var(--gray-200);">
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% for label,type,name,val,ro in [('Full Name','text','name',current_user.name,False),('Email (cannot change)','email','email',current_user.email,True)] %}
+      <div style="margin-bottom:1.1rem;"><label style="display:block;font-size:.82rem;font-weight:600;color:var(--gray-800);margin-bottom:.3rem;">{{ label }}</label><input type="{{ type }}" name="{{ name }}" value="{{ val }}" {% if ro %}readonly style="background:var(--gray-50);"{% endif %} style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.87rem;outline:none;"></div>
+      {% endfor %}
+      <div style="margin-bottom:1.1rem;"><label style="display:block;font-size:.82rem;font-weight:600;color:var(--gray-800);margin-bottom:.3rem;">Phone</label><input type="text" name="phone" value="{{ current_user.phone or '' }}" style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.87rem;outline:none;"></div>
+      <div style="margin-bottom:1.5rem;"><label style="display:block;font-size:.82rem;font-weight:600;color:var(--gray-800);margin-bottom:.3rem;">Delivery Address</label><textarea name="address" rows="3" style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.87rem;outline:none;font-family:inherit;">{{ current_user.address or '' }}</textarea></div>
+      <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+    </form>
+    <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--gray-100);display:flex;gap:1rem;">
+      <a href="{{ url_for('my_orders') }}" class="btn btn-outline btn-sm"><i class="fas fa-box"></i> My Orders</a>
+      <a href="{{ url_for('logout') }}" class="btn btn-danger btn-sm"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

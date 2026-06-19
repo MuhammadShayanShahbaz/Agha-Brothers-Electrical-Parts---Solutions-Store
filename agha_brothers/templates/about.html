@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}About – Agha Brothers{% endblock %}
+{% block content %}
+<div style="background:linear-gradient(135deg,var(--navy),var(--navy2));padding:4rem 2rem;text-align:center;color:#fff;">
+<h1 style="font-family:'Barlow Condensed',sans-serif;font-size:2.8rem;font-weight:800;">About Agha Brothers</h1>
+<p style="color:rgba(255,255,255,.55);margin-top:.5rem;">Electrical Parts & Solutions — Lahore, Pakistan</p>
+</div>
+<div style="max-width:1000px;margin:3rem auto;padding:0 1.5rem;">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-bottom:4rem;">
+<div><div style="color:var(--blue2);font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:.5rem;">Our Story</div>
+<h2 style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;color:var(--navy);font-weight:800;margin-bottom:1rem;">15+ Years Powering Pakistan</h2>
+<p style="color:var(--gray-600);line-height:1.8;margin-bottom:1rem;">Founded in Lahore, Agha Brothers has grown from a local electrical shop to one of Pakistan's most trusted suppliers of industrial and commercial electrical parts and solutions.</p>
+<p style="color:var(--gray-600);line-height:1.8;">We serve contractors, panel builders, factories, hospitals, and institutions across Pakistan with genuine products at competitive prices.</p></div>
+<div><img src="{{ url_for('static', filename='images/logo.png') }}" style="width:100%;max-width:380px;display:block;margin:0 auto;"></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
+{% for icon,title,text in [('fa-certificate','100% Genuine','All products sourced directly from manufacturers or authorised distributors. No counterfeits.'),('fa-users','Customer First','Over 10,000 satisfied customers. We prioritise your needs from first enquiry to delivery.'),('fa-tools','Technical Expertise','Our engineers provide free pre-sale advice to ensure you buy the right product.')] %}
+<div style="background:#fff;border-radius:12px;padding:1.8rem;box-shadow:0 2px 8px rgba(0,0,0,.06);text-align:center;border:1.5px solid var(--gray-200);">
+<div style="width:52px;height:52px;background:linear-gradient(135deg,var(--blue2),var(--navy));border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;color:#fff;font-size:1.2rem;"><i class="fas {{ icon }}"></i></div>
+<h3 style="font-weight:700;color:var(--navy);margin-bottom:.4rem;">{{ title }}</h3>
+<p style="font-size:.83rem;color:var(--gray-600);line-height:1.65;">{{ text }}</p>
+</div>{% endfor %}
+</div>
+</div>
+{% endblock %}

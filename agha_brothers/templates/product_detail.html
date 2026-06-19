@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} – Agha Brothers{% endblock %}
+{% block head %}
+<style>
+.detail-wrap{max-width:1280px;margin:2rem auto;padding:0 1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;}
+.prod-img{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08);border:1.5px solid var(--gray-200);}
+.prod-img img{width:100%;max-height:430px;object-fit:cover;}
+.prod-info{background:#fff;border-radius:14px;padding:2rem;box-shadow:0 2px 10px rgba(0,0,0,.08);border:1.5px solid var(--gray-200);}
+.breadcrumb{font-size:.78rem;color:var(--gray-600);margin-bottom:.5rem;}
+.breadcrumb a{color:var(--blue2);}
+.brand-tag{display:inline-block;background:var(--navy);color:#fff;padding:3px 12px;border-radius:4px;font-size:.72rem;font-weight:700;letter-spacing:1px;}
+.prod-info h1{font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:700;color:var(--navy);margin:.6rem 0 .4rem;}
+.big-price{font-family:'Barlow Condensed',sans-serif;font-size:2.6rem;font-weight:800;color:var(--blue2);margin:.8rem 0;}
+.big-price small{font-size:1rem;color:var(--gray-600);font-weight:400;font-family:'Inter',sans-serif;}
+.specs-tbl{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.83rem;}
+.specs-tbl td{padding:7px 10px;border-bottom:1px solid var(--gray-100);}
+.specs-tbl td:first-child{color:var(--gray-600);font-weight:500;width:38%;}
+.qty-ctrl{display:flex;align-items:center;border:1.5px solid var(--gray-200);border-radius:8px;overflow:hidden;}
+.qty-ctrl button{background:var(--gray-100);border:none;padding:8px 14px;cursor:pointer;font-size:1rem;}
+.qty-ctrl input{width:52px;text-align:center;border:none;padding:8px;font-size:.88rem;outline:none;}
+.add-row{display:flex;gap:.8rem;align-items:center;margin-top:1.5rem;}
+.related{max-width:1280px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.related-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-top:1.2rem;}
+@media(max-width:768px){.detail-wrap{grid-template-columns:1fr;}.related-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+{% endblock %}
+{% block content %}
+<div class="detail-wrap">
+  <div class="prod-img">
+    <img src="{{ product.image_url }}" alt="{{ product.name }}" onerror="this.src='https://via.placeholder.com/600x430?text={{ product.brand }}'">
+  </div>
+  <div class="prod-info">
+    <div class="breadcrumb">
+      <a href="{{ url_for('home') }}">Home</a> /
+      <a href="{{ url_for('products') }}">Products</a> /
+      <a href="{{ url_for('products', category=product.category_id) }}">{{ product.category.name }}</a>
+    </div>
+    <span class="brand-tag">{{ product.brand }}</span>
+    <h1>{{ product.name }}</h1>
+    <div style="display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;">
+      {% if product.stock > 10 %}<span class="stock-badge in-stock">✓ In Stock ({{ product.stock }} units)</span>
+      {% elif product.stock > 0 %}<span class="stock-badge low-stock">⚠ Only {{ product.stock }} left</span>
+      {% else %}<span class="stock-badge out-of-stock">✗ Out of Stock</span>{% endif %}
+      <span style="font-size:.75rem;color:var(--gray-600);">SKU: {{ product.sku }}</span>
+    </div>
+    <div class="big-price">PKR {{ "{:,.0f}".format(product.price) }} <small>per unit</small></div>
+    <p style="color:var(--gray-600);font-size:.88rem;line-height:1.75;">{{ product.description }}</p>
+    <table class="specs-tbl">
+      <tr><td>Brand</td><td><strong>{{ product.brand }}</strong></td></tr>
+      <tr><td>Category</td><td>{{ product.category.name }}</td></tr>
+      <tr><td>SKU / Part No.</td><td>{{ product.sku }}</td></tr>
+      <tr><td>Stock</td><td>{{ product.stock }} units available</td></tr>
+      <tr><td>Warranty</td><td>Manufacturer warranty included</td></tr>
+      <tr><td>Delivery</td><td>1–2 days Lahore · 3–5 days nationwide</td></tr>
+    </table>
+    {% if product.stock > 0 %}
+    <form action="{{ url_for('add_to_cart', pid=product.id) }}" method="POST" class="add-row">
+     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="qty-ctrl">
+        <button type="button" onclick="adj(-1)">−</button>
+        <input type="number" name="quantity" id="qty" value="1" min="1" max="{{ product.stock }}">
+        <button type="button" onclick="adj(1)">+</button>
+      </div>
+      <button class="btn btn-primary" style="flex:1;justify-content:center;"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+    </form>
+    {% else %}
+    <div style="margin-top:1.5rem;opacity:.5;cursor:not-allowed;" class="btn btn-outline"><i class="fas fa-times"></i> Out of Stock</div>
+    {% endif %}
+    <div style="display:flex;gap:1.2rem;margin-top:1rem;font-size:.78rem;color:var(--gray-600);flex-wrap:wrap;">
+      <span><i class="fas fa-truck" style="color:var(--blue2);"></i> Fast delivery Pakistan-wide</span>
+      <span><i class="fas fa-shield-alt" style="color:var(--blue2);"></i> 100% genuine product</span>
+      <span><i class="fas fa-undo" style="color:var(--blue2);"></i> Manufacturer warranty</span>
+    </div>
+  </div>
+</div>
+{% if related %}
+<div class="related">
+  <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;color:var(--navy);font-weight:700;">Related Products</h2>
+  <div class="related-grid">
+    {% for p in related %}
+    <div class="product-card">
+      <a href="{{ url_for('product_detail', id=p.id) }}" class="img-wrap">
+        <img src="{{ p.image_url }}" alt="{{ p.name }}" onerror="this.src='https://via.placeholder.com/400x200'">
+      </a>
+      <div class="card-body">
+        <span class="brand-pill">{{ p.brand }}</span>
+        <a href="{{ url_for('product_detail', id=p.id) }}"><h3>{{ p.name }}</h3></a>
+        <div class="price">PKR {{ "{:,.0f}".format(p.price) }}</div>
+      </div>
+      <div class="card-footer">
+        <a href="{{ url_for('product_detail', id=p.id) }}" class="btn btn-outline btn-sm" style="width:100%;justify-content:center;">View</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+<script>function adj(d){const i=document.getElementById('qty');i.value=Math.max(1,Math.min(parseInt(i.value||1)+d,parseInt(i.max)));}</script>
+{% endblock %}

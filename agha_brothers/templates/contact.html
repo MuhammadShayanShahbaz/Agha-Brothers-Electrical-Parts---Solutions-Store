@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Contact – Agha Brothers{% endblock %}
+{% block content %}
+<div style="background:linear-gradient(135deg,var(--navy),var(--navy2));padding:3.5rem 2rem;text-align:center;color:#fff;">
+<h1 style="font-family:'Barlow Condensed',sans-serif;font-size:2.8rem;font-weight:800;">Contact Us</h1>
+<p style="color:rgba(255,255,255,.55);margin-top:.4rem;">Get a quote, ask a technical question, or just say hello</p>
+</div>
+<div style="max-width:1000px;margin:3rem auto;padding:0 1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;">
+<div>
+  <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;color:var(--navy);margin-bottom:1.5rem;font-weight:700;">Send a Message</h2>
+  <div style="background:#fff;padding:2rem;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1.5px solid var(--gray-200);">
+    <form method="POST" action="{{ url_for('contact') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div style="margin-bottom:1rem;">
+        <label style="display:block;font-size:.82rem;font-weight:600;color:var(--gray-800);margin-bottom:.3rem;">Your Name *</label>
+        <input type="text" name="name" required placeholder="Full name" style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.87rem;outline:none;">
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="display:block;font-size:.82rem;font-weight:600;color:var(--gray-800);margin-bottom:.3rem;">Email *</label>
+        <input type="email" name="email" required placeholder="your@email.com" style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.87rem;outline:none;">
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="display:block;font-size:.82rem;font-weight:600;color:var(--gray-800);margin-bottom:.3rem;">Phone</label>
+        <input type="text" name="phone" placeholder="+92-3XX-XXXXXXX" style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.87rem;outline:none;">
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="display:block;font-size:.82rem;font-weight:600;color:var(--gray-800);margin-bottom:.3rem;">Subject</label>
+        <input type="text" name="subject" placeholder="Product enquiry / Quote" style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.87rem;outline:none;">
+      </div>
+      <div style="margin-bottom:1.2rem;">
+        <label style="display:block;font-size:.82rem;font-weight:600;color:var(--gray-800);margin-bottom:.3rem;">Message *</label>
+        <textarea name="message" rows="4" required placeholder="Describe your requirements..." style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.87rem;outline:none;font-family:inherit;"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;"><i class="fas fa-paper-plane"></i> Send Message</button>
+    </form>
+  </div>
+</div>
+<div>
+<h2 style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;color:var(--navy);margin-bottom:1.5rem;font-weight:700;">Our Information</h2>
+{% for icon,label,val in [('fa-map-marker-alt','Address','Lahore, Punjab, Pakistan'),('fa-phone','Phone','+92-300-1234567'),('fa-envelope','Email','info@aghabrothers.com'),('fa-clock','Hours','Monday – Saturday: 9:00 AM – 7:00 PM')] %}
+<div style="display:flex;gap:1rem;align-items:flex-start;background:#fff;padding:1.2rem;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.05);margin-bottom:1rem;border:1.5px solid var(--gray-200);">
+<div style="width:42px;height:42px;background:linear-gradient(135deg,var(--blue2),var(--navy));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;"><i class="fas {{ icon }}"></i></div>
+<div><div style="font-weight:700;font-size:.86rem;color:var(--navy);">{{ label }}</div><div style="font-size:.83rem;color:var(--gray-600);margin-top:.15rem;">{{ val }}</div></div>
+</div>{% endfor %}
+<div style="background:linear-gradient(135deg,var(--navy),var(--blue2));padding:1.5rem;border-radius:12px;text-align:center;">
+<div style="color:var(--gold);font-size:.72rem;font-weight:700;letter-spacing:1.5px;margin-bottom:.7rem;">WHATSAPP US NOW</div>
+<a href="https://wa.me/923001234567" class="btn btn-gold" style="justify-content:center;"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
+</div>
+</div>
+</div>
+{% endblock %}

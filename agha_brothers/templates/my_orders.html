@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}My Orders – Agha Brothers{% endblock %}
+{% block head %}<style>.orders-pg{max-width:900px;margin:2rem auto;padding:0 1.5rem;}.oc{background:#fff;border-radius:12px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:1rem;border:1.5px solid var(--gray-200);}.oh{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;}.oid{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;color:var(--navy);}.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.73rem;font-weight:600;}.bp{background:#fef3c7;color:#713f12;}.bc{background:#dbeafe;color:#1e3a8a;}.bpr{background:#e0e7ff;color:#3730a3;}.bs{background:#dcfce7;color:#14532d;}.bd{background:#16a34a;color:#fff;}.bx{background:#fee2e2;color:#7f1d1d;}</style>{% endblock %}
+{% block content %}
+<div class="orders-pg">
+  <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:1.9rem;color:var(--navy);margin-bottom:1.5rem;"><i class="fas fa-box"></i> My Orders</h1>
+  {% if orders %}{% for o in orders %}
+  <div class="oc">
+    <div class="oh">
+      <div><div class="oid">Order #{{ o.id }}</div><div style="font-size:.76rem;color:var(--gray-600);">{{ o.created_at.strftime('%d %b %Y, %I:%M %p') }}</div></div>
+      <div style="text-align:right;">
+        {% set sc = {'Pending':'bp','Confirmed':'bc','Processing':'bpr','Shipped':'bs','Delivered':'bd','Cancelled':'bx'} %}
+        <span class="badge {{ sc.get(o.status,'bp') }}">{{ o.status }}</span>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;color:var(--blue2);margin-top:.2rem;">PKR {{ "{:,.0f}".format(o.total_amount) }}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;">{% for item in o.items %}<span style="background:var(--gray-100);padding:3px 9px;border-radius:4px;font-size:.75rem;color:var(--gray-600);">{{ item.product.name[:28] }} ×{{ item.quantity }}</span>{% endfor %}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:.79rem;color:var(--gray-600);"><i class="fas fa-map-marker-alt" style="color:var(--blue2);"></i> {{ o.shipping_address[:50] }}{% if o.shipping_address|length>50 %}...{% endif %}</span>
+      <a href="{{ url_for('order_detail', id=o.id) }}" class="btn btn-outline btn-sm">View Details</a>
+    </div>
+  </div>
+  {% endfor %}{% else %}
+  <div style="text-align:center;padding:4rem;background:#fff;border-radius:14px;"><i class="fas fa-box-open" style="font-size:3.5rem;color:var(--gray-200);display:block;margin-bottom:1rem;"></i><h3 style="color:var(--gray-600);">No orders yet</h3><a href="{{ url_for('products') }}" class="btn btn-primary" style="margin-top:1.2rem;"><i class="fas fa-shopping-bag"></i> Start Shopping</a></div>
+  {% endif %}
+</div>
+{% endblock %}

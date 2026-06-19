@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Checkout – Agha Brothers{% endblock %}
+{% block head %}<style>.co-wrap{max-width:1000px;margin:2rem auto;padding:0 1.5rem;display:grid;grid-template-columns:1fr 320px;gap:2rem;align-items:start;}.co-form{background:#fff;border-radius:14px;padding:2rem;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1.5px solid var(--gray-200);}.co-form h2{font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;color:var(--navy);margin-bottom:1.5rem;}.fg{margin-bottom:1.1rem;}.fg label{display:block;font-size:.82rem;font-weight:600;color:var(--gray-800);margin-bottom:.35rem;}.fg input,.fg textarea{width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.87rem;outline:none;font-family:inherit;}.fg input:focus,.fg textarea:focus{border-color:var(--blue2);}.sum-box{background:#fff;border-radius:14px;padding:1.8rem;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1.5px solid var(--gray-200);}.sum-row{display:flex;justify-content:space-between;font-size:.85rem;color:var(--gray-600);margin-bottom:.6rem;}.sum-row.total{font-weight:700;font-size:1.05rem;color:var(--navy);border-top:2px solid var(--gray-200);padding-top:.8rem;}@media(max-width:768px){.co-wrap{grid-template-columns:1fr;}}</style>{% endblock %}
+{% block content %}
+<div class="co-wrap">
+  <div class="co-form">
+    <h2><i class="fas fa-map-marker-alt"></i> Delivery Details</h2>
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="fg"><label>Full Name</label><input type="text" value="{{ current_user.name }}" readonly style="background:var(--gray-50);"></div>
+      <div class="fg"><label>Phone</label><input type="text" value="{{ current_user.phone or '' }}" readonly style="background:var(--gray-50);"></div>
+      <div class="fg"><label>Delivery Address *</label><textarea name="address" rows="3" required placeholder="Full address including city">{{ current_user.address or '' }}</textarea></div>
+      <div class="fg"><label>Order Notes (optional)</label><textarea name="notes" rows="2" placeholder="Special instructions, call before delivery..."></textarea></div>
+      <div style="background:var(--gray-50);border-radius:8px;padding:1rem;margin-bottom:1.2rem;font-size:.81rem;color:var(--gray-600);"><i class="fas fa-info-circle" style="color:var(--blue2);"></i> <strong>Payment:</strong> Cash on Delivery (COD). We will call to confirm your order within 2 hours.</div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;font-size:.95rem;"><i class="fas fa-check-circle"></i> Place Order — PKR {{ "{:,.0f}".format(total) }}</button>
+    </form>
+  </div>
+  <div class="sum-box">
+    <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:1.2rem;">Your Order</h2>
+    {% for item in items %}<div class="sum-row"><span>{{ item.product.name[:26] }}... ×{{ item.quantity }}</span><span>PKR {{ "{:,.0f}".format(item.product.price * item.quantity) }}</span></div>{% endfor %}
+    <div class="sum-row total"><span>Total</span><span>PKR {{ "{:,.0f}".format(total) }}</span></div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block title %}Products – Agha Brothers{% endblock %}
+{% block head %}
+<style>
+.page-hdr{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:2.5rem 2rem;color:#fff;}
+.page-hdr h1{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:800;}
+.page-hdr p{color:rgba(255,255,255,.55);font-size:.87rem;margin-top:.3rem;}
+.layout{max-width:1280px;margin:0 auto;padding:2rem 1.5rem;display:grid;grid-template-columns:230px 1fr;gap:2rem;}
+.sidebar{background:#fff;border-radius:14px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,.06);height:fit-content;border:1.5px solid var(--gray-200);}
+.sb-head{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:.9rem;padding-bottom:.5rem;border-bottom:2px solid var(--blue2);}
+.filter-link{display:block;padding:7px 10px;border-radius:7px;font-size:.83rem;color:var(--gray-600);transition:all .2s;}
+.filter-link:hover,.filter-link.active{background:var(--blue2);color:#fff;}
+.search-row{display:flex;gap:.5rem;margin-bottom:1.2rem;}
+.search-row input{flex:1;padding:8px 12px;border:1.5px solid var(--gray-200);border-radius:7px;font-size:.83rem;outline:none;}
+.search-row input:focus{border-color:var(--blue2);}
+.search-row button{background:var(--blue2);color:#fff;border:none;border-radius:7px;padding:8px 13px;cursor:pointer;}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;flex-wrap:wrap;gap:.5rem;}
+.result-info{font-size:.83rem;color:var(--gray-600);}
+.pg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+.pagination{display:flex;gap:.4rem;margin-top:2rem;justify-content:center;}
+.pg-link{padding:6px 12px;border-radius:6px;background:#fff;border:1.5px solid var(--gray-200);font-size:.82rem;color:var(--gray-600);transition:all .2s;}
+.pg-link:hover,.pg-link.active{background:var(--blue2);color:#fff;border-color:var(--blue2);}
+@media(max-width:768px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}.pg-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-hdr">
+  <div class="container">
+    <h1><i class="fas fa-boxes"></i> All Products</h1>
+    <p>25+ product lines · 10 categories · 7 premium brands · Nationwide delivery</p>
+  </div>
+</div>
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <form method="GET" action="{{ url_for('products') }}" style="margin-bottom:1.5rem;">
+      <div class="search-row">
+        <input type="text" name="q" value="{{ search }}" placeholder="Search...">
+        <button type="submit"><i class="fas fa-search"></i></button>
+      </div>
+    </form>
+    <div class="sb-head">Categories</div>
+    <a href="{{ url_for('products') }}" class="filter-link {% if not selected_cat %}active{% endif %}">All Categories</a>
+    {% for cat in categories %}
+    <a href="{{ url_for('products', category=cat.id, brand=selected_brand, q=search) }}" class="filter-link {% if selected_cat==cat.id %}active{% endif %}">
+      <i class="fas {{ cat.icon }}" style="width:15px;margin-right:6px;"></i>{{ cat.name }}
+    </a>
+    {% endfor %}
+    <div class="sb-head" style="margin-top:1.2rem;">Brand</div>
+    <a href="{{ url_for('products', category=selected_cat, q=search) }}" class="filter-link {% if not selected_brand %}active{% endif %}">All Brands</a>
+    {% for b in brands %}
+    <a href="{{ url_for('products', category=selected_cat, brand=b, q=search) }}" class="filter-link {% if selected_brand==b %}active{% endif %}">{{ b }}</a>
+    {% endfor %}
+    {% if selected_cat or selected_brand or search %}
+    <a href="{{ url_for('products') }}" class="btn btn-outline btn-sm" style="width:100%;justify-content:center;margin-top:1.2rem;"><i class="fas fa-times"></i> Clear</a>
+    {% endif %}
+  </aside>
+  <!-- MAIN -->
+  <div>
+    <div class="toolbar">
+      <span class="result-info">{{ products.total }} products found{% if search %} for "<strong>{{ search }}</strong>"{% endif %}</span>
+    </div>
+    {% if products.items %}
+    <div class="pg-grid">
+      {% for p in products.items %}
+      <div class="product-card">
+        <a href="{{ url_for('product_detail', id=p.id) }}" class="img-wrap">
+          <img src="{{ p.image_url }}" alt="{{ p.name }}" onerror="this.src='https://via.placeholder.com/400x200?text={{ p.brand }}'">
+        </a>
+        <div class="card-body">
+          <span class="brand-pill">{{ p.brand }}</span>
+          <a href="{{ url_for('product_detail', id=p.id) }}"><h3>{{ p.name }}</h3></a>
+          <p style="font-size:.76rem;color:var(--gray-600);margin-top:.3rem;line-height:1.45;">{{ p.description[:80] }}...</p>
+          <div class="price">PKR {{ "{:,.0f}".format(p.price) }} <small>/ unit</small></div>
+          <div style="margin-top:.3rem;">
+            {% if p.stock > 10 %}<span class="stock-badge in-stock">✓ In Stock ({{ p.stock }})</span>
+            {% elif p.stock > 0 %}<span class="stock-badge low-stock">⚠ Only {{ p.stock }} left</span>
+            {% else %}<span class="stock-badge out-of-stock">✗ Out of Stock</span>{% endif %}
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="{{ url_for('product_detail', id=p.id) }}" class="btn btn-outline btn-sm" style="flex:1;justify-content:center;">Details</a>
+          {% if p.stock > 0 %}
+          <form action="{{ url_for('add_to_cart', pid=p.id) }}" method="POST" style="flex:1;">
+           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="quantity" value="1">
+            <button class="btn btn-primary btn-sm" style="width:100%;justify-content:center;"><i class="fas fa-cart-plus"></i> Add</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% if products.pages > 1 %}
+    <div class="pagination">
+      {% for n in products.iter_pages() %}
+        {% if n %}<a href="{{ url_for('products', page=n, category=selected_cat, brand=selected_brand, q=search) }}" class="pg-link {% if n==products.page %}active{% endif %}">{{ n }}</a>
+        {% else %}<span class="pg-link">…</span>{% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div style="text-align:center;padding:4rem;background:#fff;border-radius:14px;">
+      <i class="fas fa-search" style="font-size:3rem;color:var(--gray-200);display:block;margin-bottom:1rem;"></i>
+      <h3 style="color:var(--gray-600);">No products found</h3>
+      <a href="{{ url_for('products') }}" class="btn btn-primary" style="margin-top:1.2rem;">Clear Filters</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

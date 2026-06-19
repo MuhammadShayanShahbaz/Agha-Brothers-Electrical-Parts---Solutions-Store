@@ -1,0 +1,46 @@
+{% extends 'admin/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="stats-g">
+  <div class="sc"><div class="sc-icon" style="background:linear-gradient(135deg,#2952c4,#0d1b3e);"><i class="fas fa-shopping-bag"></i></div><div><div class="sc-val">{{ total_orders }}</div><div class="sc-lbl">Total Orders</div></div></div>
+  <div class="sc"><div class="sc-icon" style="background:linear-gradient(135deg,#d97706,#92400e);"><i class="fas fa-clock"></i></div><div><div class="sc-val">{{ pending }}</div><div class="sc-lbl">Pending Orders</div></div></div>
+  <div class="sc"><div class="sc-icon" style="background:linear-gradient(135deg,#16a34a,#14532d);"><i class="fas fa-boxes"></i></div><div><div class="sc-val">{{ total_products }}</div><div class="sc-lbl">Active Products</div></div></div>
+  <div class="sc"><div class="sc-icon" style="background:linear-gradient(135deg,#7c3aed,#4c1d95);"><i class="fas fa-users"></i></div><div><div class="sc-val">{{ total_users }}</div><div class="sc-lbl">Customers</div></div></div>
+</div>
+<div style="background:linear-gradient(135deg,var(--navy),var(--blue2));border-radius:12px;padding:1.4rem 1.8rem;display:flex;align-items:center;gap:1.5rem;margin-bottom:1.8rem;">
+  <div style="width:50px;height:50px;background:rgba(245,184,0,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.4rem;"><i class="fas fa-rupee-sign"></i></div>
+  <div><div style="font-size:.72rem;color:rgba(255,255,255,.45);font-weight:700;letter-spacing:1px;">TOTAL REVENUE (DELIVERED ORDERS)</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:800;color:var(--gold);">PKR {{ "{:,.0f}".format(revenue) }}</div></div>
+</div>
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;">
+  <div class="tbl-card">
+    <div class="tbl-hdr"><h3><i class="fas fa-shopping-bag" style="color:var(--blue2);margin-right:.4rem;"></i>Recent Orders</h3><a href="{{ url_for('admin_orders') }}" class="btn btn-outline btn-sm">View All</a></div>
+    <table><thead><tr><th>Order</th><th>Customer</th><th>Amount</th><th>Status</th><th>Update</th></tr></thead>
+    <tbody>
+      {% for o in recent_orders %}
+      <tr>
+        <td><strong>#{{ o.id }}</strong><br><span style="font-size:.7rem;color:var(--gray-600);">{{ o.created_at.strftime('%d %b %Y') }}</span></td>
+        <td>{{ o.customer.name }}<br><span style="font-size:.7rem;color:var(--gray-600);">{{ o.customer.phone or o.customer.email }}</span></td>
+        <td style="font-weight:700;color:var(--blue2);">PKR {{ "{:,.0f}".format(o.total_amount) }}</td>
+        <td><span class="badge b-{{ o.status.lower() }}">{{ o.status }}</span></td>
+        <td>
+          <form action="{{ url_for('update_order_status', id=o.id) }}" method="POST" style="display:flex;gap:.3rem;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <select name="status" class="fc" style="padding:4px 7px;font-size:.74rem;">
+              {% for s in ['Pending','Confirmed','Processing','Shipped','Delivered','Cancelled'] %}
+              <option value="{{ s }}" {% if o.status==s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-check"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody></table>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-hdr"><h3><i class="fas fa-exclamation-triangle" style="color:var(--warning);margin-right:.4rem;"></i>Low Stock</h3><a href="{{ url_for('admin_inventory') }}" class="btn btn-outline btn-sm">Manage</a></div>
+    {% if low_stock %}<table><thead><tr><th>Product</th><th>Stock</th></tr></thead><tbody>{% for p in low_stock %}<tr><td style="font-size:.79rem;"><strong>{{ p.name[:32] }}{% if p.name|length>32 %}...{% endif %}</strong><br><span style="color:var(--gray-600);">{{ p.brand }}</span></td><td><span class="badge {% if p.stock==0 %}b-out{% else %}b-low{% endif %}">{{ p.stock }}</span></td></tr>{% endfor %}</tbody></table>
+    {% else %}<div style="padding:2rem;text-align:center;color:var(--gray-600);font-size:.83rem;"><i class="fas fa-check-circle" style="color:var(--success);font-size:1.5rem;display:block;margin-bottom:.5rem;"></i>All products well-stocked</div>{% endif %}
+  </div>
+</div>
+{% endblock %}

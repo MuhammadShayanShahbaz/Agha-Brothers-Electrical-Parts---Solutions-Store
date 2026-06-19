@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{% block title %}Admin{% endblock %} – Agha Brothers</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0d1b3e;--navy2:#162354;--blue:#1a3a8f;--blue2:#2952c4;--gold:#f5b800;--gray-50:#f8f9fb;--gray-100:#f1f3f7;--gray-200:#e2e6ef;--gray-600:#5a6480;--gray-800:#1e2545;--success:#16a34a;--danger:#dc2626;--warning:#d97706;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--gray-800);display:flex;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+.sidebar{width:250px;background:var(--navy);min-height:100vh;position:fixed;top:0;left:0;display:flex;flex-direction:column;z-index:100;}
+.sb-logo{padding:1.4rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.08);}
+.sb-logo img{height:44px;}
+.sb-label{color:var(--gold);font-size:.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:.4rem;}
+.sb-nav{flex:1;padding:.8rem 0;overflow-y:auto;}
+.nav-sec{padding:.5rem 1.2rem .2rem;font-size:.6rem;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.nav-a{display:flex;align-items:center;gap:10px;padding:9px 1.2rem;color:rgba(255,255,255,.6);font-size:.84rem;transition:all .18s;border-left:3px solid transparent;}
+.nav-a:hover,.nav-a.active{color:#fff;background:rgba(255,255,255,.07);border-left-color:var(--gold);}
+.nav-a i{width:16px;text-align:center;font-size:.88rem;}
+.main{margin-left:250px;flex:1;display:flex;flex-direction:column;}
+.topbar{background:#fff;padding:0 1.8rem;height:62px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 4px rgba(0,0,0,.07);position:sticky;top:0;z-index:50;}
+.topbar-title{font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;color:var(--navy);}
+.topbar-right{display:flex;align-items:center;gap:1rem;}
+.av{width:34px;height:34px;background:var(--blue2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.82rem;font-weight:700;}
+.body-pad{padding:1.8rem;flex:1;}
+/* STAT CARDS */
+.stats-g{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;margin-bottom:1.8rem;}
+.sc{background:#fff;border-radius:12px;padding:1.4rem;box-shadow:0 1px 4px rgba(0,0,0,.05);display:flex;align-items:center;gap:1rem;border:1.5px solid var(--gray-200);}
+.sc-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:#fff;flex-shrink:0;}
+.sc-val{font-family:'Barlow Condensed',sans-serif;font-size:1.9rem;font-weight:700;line-height:1;}
+.sc-lbl{font-size:.73rem;color:var(--gray-600);margin-top:.2rem;}
+/* TABLE */
+.tbl-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);border:1.5px solid var(--gray-200);}
+.tbl-hdr{padding:1.1rem 1.4rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gray-100);}
+.tbl-hdr h3{font-size:.95rem;font-weight:700;color:var(--navy);}
+table{width:100%;border-collapse:collapse;}
+thead th{background:var(--gray-50);padding:10px 13px;font-size:.73rem;font-weight:700;color:var(--gray-600);text-align:left;letter-spacing:.4px;border-bottom:1.5px solid var(--gray-200);}
+tbody td{padding:11px 13px;font-size:.84rem;border-bottom:1px solid var(--gray-100);vertical-align:middle;}
+tbody tr:hover{background:var(--gray-50);}
+/* BADGE */
+.badge{display:inline-block;padding:3px 10px;border-radius:16px;font-size:.7rem;font-weight:700;}
+.b-pending{background:#fef3c7;color:#713f12;}
+.b-confirmed{background:#dbeafe;color:#1e3a8a;}
+.b-processing{background:#e0e7ff;color:#3730a3;}
+.b-shipped{background:#dcfce7;color:#14532d;}
+.b-delivered{background:#16a34a;color:#fff;}
+.b-cancelled{background:#fee2e2;color:#7f1d1d;}
+.b-active{background:#dcfce7;color:#14532d;}
+.b-inactive{background:#fee2e2;color:#7f1d1d;}
+.b-ok{background:#dcfce7;color:#14532d;}
+.b-low{background:#fef3c7;color:#713f12;}
+.b-out{background:#fee2e2;color:#7f1d1d;}
+/* UTILS */
+.btn{display:inline-flex;align-items:center;gap:.35rem;padding:8px 15px;border-radius:7px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .18s;}
+.btn-primary{background:var(--blue2);color:#fff;}.btn-primary:hover{background:var(--navy);}
+.btn-success{background:var(--success);color:#fff;}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-outline{background:transparent;border:1.5px solid var(--blue2);color:var(--blue2);}.btn-outline:hover{background:var(--blue2);color:#fff;}
+.btn-sm{padding:5px 10px;font-size:.74rem;}
+.fc{padding:8px 11px;border:1.5px solid var(--gray-200);border-radius:7px;font-size:.83rem;outline:none;font-family:inherit;}.fc:focus{border-color:var(--blue2);}
+.alert-strip{padding:9px 14px;border-radius:7px;font-size:.83rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+.as-success{background:#dcfce7;color:#14532d;}
+.as-danger{background:#fee2e2;color:#7f1d1d;}
+.as-info{background:#dbeafe;color:#1e3a8a;}
+.as-warning{background:#fef3c7;color:#713f12;}
+</style>
+{% block head %}{% endblock %}
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sb-logo">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Agha Brothers">
+    <div class="sb-label">Admin Panel</div>
+  </div>
+  <nav class="sb-nav">
+    <div class="nav-sec">Overview</div>
+    <a href="{{ url_for('admin_dashboard') }}" class="nav-a {% if request.endpoint=='admin_dashboard' %}active{% endif %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <div class="nav-sec">Commerce</div>
+    <a href="{{ url_for('admin_orders') }}" class="nav-a {% if 'order' in request.endpoint %}active{% endif %}"><i class="fas fa-shopping-bag"></i> Orders</a>
+    <a href="{{ url_for('admin_products') }}" class="nav-a {% if 'product' in request.endpoint %}active{% endif %}"><i class="fas fa-boxes"></i> Products</a>
+    <a href="{{ url_for('admin_inventory') }}" class="nav-a {% if request.endpoint=='admin_inventory' %}active{% endif %}"><i class="fas fa-warehouse"></i> Inventory</a>
+    <div class="nav-sec">People</div>
+    <a href="{{ url_for('admin_users') }}" class="nav-a {% if request.endpoint=='admin_users' %}active{% endif %}"><i class="fas fa-users"></i> Customers</a>
+    <div class="nav-sec">Site</div>
+    <a href="{{ url_for('home') }}" class="nav-a" target="_blank"><i class="fas fa-external-link-alt"></i> View Website</a>
+    <a href="{{ url_for('logout') }}" class="nav-a"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+</aside>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">{% block page_title %}Admin{% endblock %}</div>
+    <div class="topbar-right">
+      {% with msgs = get_flashed_messages(with_categories=true) %}{% for c,m in msgs %}<div class="alert-strip as-{{ c }}">{{ m }}</div>{% endfor %}{% endwith %}
+      <div class="av">{{ current_user.name[0] }}</div>
+      <span style="font-size:.84rem;font-weight:600;">{{ current_user.name }}</span>
+    </div>
+  </div>
+  <div class="body-pad">{% block content %}{% endblock %}</div>
+</div>
+</body>
+</html>

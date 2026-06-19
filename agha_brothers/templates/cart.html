@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}My Cart – Agha Brothers{% endblock %}
+{% block head %}<style>
+.cart-wrap{max-width:1100px;margin:2rem auto;padding:0 1.5rem;}
+.cart-layout{display:grid;grid-template-columns:1fr 320px;gap:2rem;align-items:start;}
+.cart-tbl{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1.5px solid var(--gray-200);}
+.cart-tbl table{width:100%;border-collapse:collapse;}
+.cart-tbl th{background:var(--navy);color:#fff;padding:11px 14px;font-size:.78rem;font-weight:600;text-align:left;}
+.cart-tbl td{padding:13px 14px;border-bottom:1px solid var(--gray-100);vertical-align:middle;font-size:.86rem;}
+.ci-img{width:58px;height:58px;object-fit:cover;border-radius:8px;border:1.5px solid var(--gray-200);}
+.qty-row{display:flex;align-items:center;gap:.3rem;}
+.qty-row input{width:48px;text-align:center;padding:5px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:.82rem;}
+.summary-box{background:#fff;border-radius:14px;padding:1.8rem;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1.5px solid var(--gray-200);}
+.summary-box h2{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:1.2rem;}
+.sum-row{display:flex;justify-content:space-between;font-size:.86rem;color:var(--gray-600);margin-bottom:.65rem;}
+.sum-row.total{font-weight:700;font-size:1.05rem;color:var(--navy);border-top:2px solid var(--gray-200);padding-top:.8rem;margin-top:.5rem;}
+@media(max-width:768px){.cart-layout{grid-template-columns:1fr;}}
+</style>{% endblock %}
+{% block content %}
+<div class="cart-wrap">
+  <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:1.9rem;color:var(--navy);margin-bottom:1.5rem;"><i class="fas fa-shopping-cart"></i> Shopping Cart</h1>
+  {% if items %}
+  <div class="cart-layout">
+    <div class="cart-tbl">
+      <table>
+        <thead><tr><th>Product</th><th>Price</th><th>Quantity</th><th>Subtotal</th><th></th></tr></thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:10px;"><img src="{{ item.product.image_url }}" class="ci-img" onerror="this.src='https://via.placeholder.com/58'"><div><div style="font-weight:600;color:var(--navy);">{{ item.product.name }}</div><div style="font-size:.72rem;color:var(--gray-600);">{{ item.product.brand }}</div></div></div></td>
+            <td>PKR {{ "{:,.0f}".format(item.product.price) }}</td>
+            <td>
+              <form action="{{ url_for('update_cart', iid=item.id) }}" method="POST" class="qty-row">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="number" name="quantity" value="{{ item.quantity }}" min="0" max="{{ item.product.stock }}">
+                <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-sync-alt"></i></button>
+              </form>
+            </td>
+            <td style="font-weight:700;color:var(--blue2);">PKR {{ "{:,.0f}".format(item.product.price * item.quantity) }}</td>
+            <td>
+              <!-- Converted to POST form for CSRF protection -->
+              <form action="{{ url_for('remove_from_cart', iid=item.id) }}" method="POST">
+               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="summary-box">
+      <h2>Order Summary</h2>
+      {% for item in items %}
+      <div class="sum-row"><span>{{ item.product.name[:28] }}... ×{{ item.quantity }}</span><span>PKR {{ "{:,.0f}".format(item.product.price * item.quantity) }}</span></div>
+      {% endfor %}
+      <div class="sum-row total"><span>Total</span><span>PKR {{ "{:,.0f}".format(total) }}</span></div>
+      {% if total >= 25000 %}<div style="background:#dcfce7;color:#14532d;border-radius:6px;padding:7px 10px;font-size:.78rem;font-weight:600;margin:.8rem 0;"><i class="fas fa-check-circle"></i> Free delivery applied!</div>{% endif %}
+      <a href="{{ url_for('checkout') }}" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:1rem;"><i class="fas fa-credit-card"></i> Checkout</a>
+      <a href="{{ url_for('products') }}" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:.7rem;"><i class="fas fa-arrow-left"></i> Continue Shopping</a>
+    </div>
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:5rem;background:#fff;border-radius:14px;">
+    <i class="fas fa-shopping-cart" style="font-size:3.5rem;color:var(--gray-200);display:block;margin-bottom:1.2rem;"></i>
+    <h3 style="color:var(--gray-600);">Your cart is empty</h3>
+    <a href="{{ url_for('products') }}" class="btn btn-primary" style="margin-top:1.2rem;"><i class="fas fa-boxes"></i> Browse Products</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

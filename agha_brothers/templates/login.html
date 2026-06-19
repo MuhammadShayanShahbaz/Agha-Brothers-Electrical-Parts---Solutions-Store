@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Login – Agha Brothers{% endblock %}
+{% block head %}<style>.auth-pg{min-height:calc(100vh - 160px);display:flex;align-items:center;justify-content:center;padding:3rem 1rem;background:linear-gradient(135deg,var(--navy),var(--navy2));}.auth-box{background:#fff;border-radius:16px;padding:2.5rem;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.3);}.auth-logo{text-align:center;margin-bottom:2rem;}.auth-logo img{height:55px;}.auth-logo p{font-size:.8rem;color:var(--gray-600);margin-top:.4rem;}.fg{margin-bottom:1.1rem;}.fg label{display:block;font-size:.82rem;font-weight:600;color:var(--gray-800);margin-bottom:.35rem;}.fg input{width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.88rem;outline:none;}.fg input:focus{border-color:var(--blue2);}.auth-btn{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:.93rem;font-weight:700;cursor:pointer;margin-top:.3rem;}.auth-btn:hover{background:var(--blue2);}.auth-alt{text-align:center;font-size:.82rem;color:var(--gray-600);margin-top:1rem;}.auth-alt a{color:var(--blue2);font-weight:600;}</style>{% endblock %}
+{% block content %}
+<div class="auth-pg">
+  <div class="auth-box">
+    <div class="auth-logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Agha Brothers"><p>Sign in to your account</p></div>
+    <form method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="fg"><label>Email Address</label><input type="email" name="email" required placeholder="your@email.com"></div>
+      <div class="fg"><label>Password</label><input type="password" name="password" required placeholder="Your password"></div>
+      <button type="submit" class="auth-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+    </form>
+    <p class="auth-alt">No account? <a href="{{ url_for('register') }}">Sign up free</a></p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,252 @@
+{% extends 'admin/base.html' %}
+{% block title %}Inventory{% endblock %}
+{% block page_title %}Inventory Management{% endblock %}
+{% block head %}
+<style>
+  /* ── layout & cards ── */
+  .inv-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .inv-sc {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    border: 1.5px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+  }
+  .inv-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .inv-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .inv-lbl {
+    font-size: .7rem;
+    color: var(--gray-600);
+  }
+
+  /* ── search bar ── */
+  .search-bar {
+    display: flex;
+    gap: .7rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+  }
+  .search-bar input {
+    flex: 1;
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: .83rem;
+    outline: none;
+  }
+  .search-bar input:focus {
+    border-color: var(--blue2);
+  }
+
+  /* ── table ── */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .stock-row td {
+    vertical-align: middle;
+  }
+  .stock-row.out-row {
+    background: #fff8f8;
+  }
+  .stock-row.low-row {
+    background: #fffdf0;
+  }
+
+  /* ── stock bar ── */
+  .stock-bar-wrap {
+    width: 100px;
+    height: 7px;
+    background: var(--gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+    display: inline-block;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .stock-bar {
+    height: 100%;
+    border-radius: 4px;
+  }
+  .bar-ok   { background: #16a34a; }
+  .bar-low  { background: #d97706; }
+  .bar-out  { background: #dc2626; }
+
+  /* ── responsive ── */
+  @media (max-width: 768px) {
+    .inv-stats {
+      grid-template-columns: repeat(2, 1fr);
+      gap: .7rem;
+    }
+    .inv-sc {
+      padding: .9rem 1rem;
+    }
+    .inv-val {
+      font-size: 1.3rem;
+    }
+    .table-responsive table {
+      font-size: .75rem;
+    }
+    .table-responsive table th,
+    .table-responsive table td {
+      padding: 6px 8px;
+      white-space: nowrap;
+    }
+    .stock-bar-wrap {
+      width: 60px;
+    }
+    .stock-row td:first-child img {
+      width: 32px;
+      height: 32px;
+    }
+    .search-bar input {
+      min-width: 140px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .inv-stats {
+      grid-template-columns: 1fr 1fr;
+    }
+    .inv-sc {
+      padding: .6rem .8rem;
+    }
+    .inv-val {
+      font-size: 1.1rem;
+    }
+    .inv-lbl {
+      font-size: .6rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+{% set total_stock = products|sum(attribute='stock') %}
+{% set out_count = products|selectattr('stock','eq',0)|list|length %}
+{% set low_count = products|selectattr('stock','lt',10)|selectattr('stock','gt',0)|list|length %}
+{% set ok_count = products|selectattr('stock','ge',10)|list|length %}
+
+<div class="inv-stats">
+  <div class="inv-sc">
+    <div class="inv-icon" style="background:linear-gradient(135deg,var(--blue2),var(--navy));"><i class="fas fa-boxes"></i></div>
+    <div><div class="inv-val">{{ total_stock }}</div><div class="inv-lbl">Total Units</div></div>
+  </div>
+  <div class="inv-sc">
+    <div class="inv-icon" style="background:linear-gradient(135deg,#16a34a,#14532d);"><i class="fas fa-check-circle"></i></div>
+    <div><div class="inv-val" style="color:#16a34a;">{{ ok_count }}</div><div class="inv-lbl">Well Stocked</div></div>
+  </div>
+  <div class="inv-sc">
+    <div class="inv-icon" style="background:linear-gradient(135deg,#d97706,#92400e);"><i class="fas fa-exclamation-triangle"></i></div>
+    <div><div class="inv-val" style="color:#d97706;">{{ low_count }}</div><div class="inv-lbl">Low Stock</div></div>
+  </div>
+  <div class="inv-sc">
+    <div class="inv-icon" style="background:linear-gradient(135deg,#dc2626,#7f1d1d);"><i class="fas fa-times-circle"></i></div>
+    <div><div class="inv-val" style="color:#dc2626;">{{ out_count }}</div><div class="inv-lbl">Out of Stock</div></div>
+  </div>
+</div>
+
+<div style="display:flex; gap:.5rem; margin-bottom:1rem; flex-wrap:wrap; align-items:center;">
+  <form method="GET" style="display:flex; gap:.5rem; flex:1; flex-wrap:wrap;">
+    <input type="text" name="q" value="{{ search }}" placeholder="Search products..." style="flex:1; min-width:180px; padding:8px 12px; border:1.5px solid var(--gray-200); border-radius:8px; font-size:.83rem; outline:none;">
+    <select name="cat" class="fc" style="padding:8px 12px;">
+      <option value="">All Categories</option>
+      {% for cat in categories %}<option value="{{ cat.id }}" {% if selected_cat==cat.id %}selected{% endif %}>{{ cat.name }}</option>{% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-filter"></i> Filter</button>
+    <a href="{{ url_for('admin_inventory') }}" class="btn btn-outline btn-sm"><i class="fas fa-times"></i></a>
+  </form>
+</div>
+
+<div class="tbl-card">
+  <div class="tbl-hdr">
+    <h3><i class="fas fa-warehouse" style="color:var(--blue2);margin-right:.4rem;"></i>Stock Levels — {{ products|length }} products (sorted: lowest first)</h3>
+  </div>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>SKU</th>
+          <th>Product Name</th>
+          <th>Brand</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Stock Level</th>
+          <th>Update</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr class="stock-row {% if p.stock==0 %}out-row{% elif p.stock<10 %}low-row{% endif %}">
+          <td><img src="{{ p.image_url }}" style="width:44px;height:44px;object-fit:cover;border-radius:7px;border:1.5px solid var(--gray-200);" onerror="this.src='https://via.placeholder.com/44'"></td>
+          <td style="font-size:.71rem;color:var(--gray-600);">{{ p.sku }}</td>
+          <td>
+            <div style="font-weight:600;font-size:.83rem;color:var(--navy);">{{ p.name[:42] }}{% if p.name|length>42 %}...{% endif %}</div>
+            <div style="font-size:.7rem;color:var(--gray-600);margin-top:1px;">{{ p.category.name }}</div>
+          </td>
+          <td style="font-size:.81rem;">{{ p.brand }}</td>
+          <td style="font-size:.78rem;">{{ p.category.name }}</td>
+          <td style="font-weight:700;color:var(--blue2);font-size:.83rem;">PKR {{ "{:,.0f}".format(p.price) }}</td>
+          <td>
+            {% if p.stock == 0 %}
+              <span class="badge b-out">✗ Out</span>
+            {% elif p.stock < 5 %}
+              <span class="badge b-out">⚠ Critical</span>
+            {% elif p.stock < 10 %}
+              <span class="badge b-low">⚠ Low</span>
+            {% elif p.stock < 30 %}
+              <span class="badge b-confirmed">{{ p.stock }} units</span>
+            {% else %}
+              <span class="badge b-ok">✓ {{ p.stock }}</span>
+            {% endif %}
+
+            <div class="stock-bar-wrap">
+              {% set pct = [p.stock, 100]|min %}
+              {% if p.stock == 0 %}
+                {% set bar_color = 'bar-out' %}
+              {% elif p.stock < 10 %}
+                {% set bar_color = 'bar-low' %}
+              {% else %}
+                {% set bar_color = 'bar-ok' %}
+              {% endif %}
+              <div class="stock-bar {{ bar_color }}" style="width: {{ pct }}%;"></div>
+            </div>
+          </td>
+          <td>
+            <form action="{{ url_for('update_inventory', id=p.id) }}" method="POST" style="display:flex; gap:.4rem; align-items:center;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input type="number" name="stock" value="{{ p.stock }}" min="0" class="fc" style="width:72px; padding:5px 8px; font-size:.81rem;">
+              <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-save"></i></button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

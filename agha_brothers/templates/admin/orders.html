@@ -1,0 +1,36 @@
+{% extends 'admin/base.html' %}
+{% block title %}Orders{% endblock %}
+{% block page_title %}Manage Orders{% endblock %}
+{% block content %}
+<div style="display:flex;gap:.5rem;margin-bottom:1.4rem;flex-wrap:wrap;">
+  {% for s in ['','Pending','Confirmed','Processing','Shipped','Delivered','Cancelled'] %}
+  <a href="{{ url_for('admin_orders', status=s) }}" class="btn {% if status==s %}btn-primary{% else %}btn-outline{% endif %} btn-sm">{{ s if s else 'All' }}</a>
+  {% endfor %}
+</div>
+<div class="tbl-card">
+  <div class="tbl-hdr"><h3>Orders ({{ orders|length }})</h3></div>
+  <table><thead><tr><th>ID</th><th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Update</th></tr></thead>
+  <tbody>
+    {% for o in orders %}
+    <tr>
+      <td><strong>#{{ o.id }}</strong></td>
+      <td style="font-size:.76rem;">{{ o.created_at.strftime('%d %b %Y') }}<br>{{ o.created_at.strftime('%I:%M %p') }}</td>
+      <td>{{ o.customer.name }}<br><span style="font-size:.71rem;color:var(--gray-600);">{{ o.customer.phone or o.customer.email }}</span></td>
+      <td style="font-size:.76rem;">{% for item in o.items %}<div>{{ item.product.name[:22] }}... x{{ item.quantity }}</div>{% endfor %}</td>
+      <td style="font-weight:700;color:var(--blue2);">PKR {{ "{:,.0f}".format(o.total_amount) }}</td>
+      <td><span class="badge b-{{ o.status.lower() }}">{{ o.status }}</span></td>
+      <td>
+        <form action="{{ url_for('update_order_status', id=o.id) }}" method="POST" style="display:flex;gap:.3rem;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <select name="status" class="fc" style="padding:4px 7px;font-size:.74rem;">
+            {% for s in ['Pending','Confirmed','Processing','Shipped','Delivered','Cancelled'] %}
+            <option value="{{ s }}" {% if o.status==s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+          </select>
+          <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save"></i></button>
+        </form>
+      </td>
+    </tr>
+    {% else %}<tr><td colspan="7" style="text-align:center;padding:2.5rem;color:var(--gray-600);">No orders found</td></tr>{% endfor %}
+  </tbody></table>
+</div>
+{% endblock %}

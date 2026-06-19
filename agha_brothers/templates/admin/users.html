@@ -1,0 +1,22 @@
+{% extends 'admin/base.html' %}
+{% block title %}Customers{% endblock %}
+{% block page_title %}Customer Accounts{% endblock %}
+{% block content %}
+<div class="tbl-card">
+  <div class="tbl-hdr"><h3>Customers ({{ users|length }})</h3></div>
+  <table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Joined</th><th>Orders</th></tr></thead>
+  <tbody>
+    {% for u in users %}
+    <tr>
+      <td style="color:var(--gray-600);font-size:.78rem;">#{{ u.id }}</td>
+      <td><strong>{{ u.name }}</strong></td>
+      <td style="font-size:.81rem;">{{ u.email }}</td>
+      <td style="font-size:.81rem;">{{ u.phone or '—' }}</td>
+      <td style="font-size:.76rem;max-width:140px;">{{ (u.address or '—')[:45] }}</td>
+      <td style="font-size:.76rem;">{{ u.created_at.strftime('%d %b %Y') }}</td>
+      <td><span class="badge b-confirmed">{{ u.orders|length }}</span></td>
+    </tr>
+    {% else %}<tr><td colspan="7" style="text-align:center;padding:2.5rem;color:var(--gray-600);">No customers yet</td></tr>{% endfor %}
+  </tbody></table>
+</div>
+{% endblock %}

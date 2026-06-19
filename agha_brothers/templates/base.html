@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>{% block title %}Agha Brothers – Electrical Parts & Solutions{% endblock %}</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0d1b3e; --navy2:#162354; --blue:#1a3a8f; --blue2:#2952c4;
+  --gold:#f5b800; --gold2:#ffd84d; --white:#fff;
+  --gray-50:#f8f9fb; --gray-100:#f1f3f7; --gray-200:#e2e6ef;
+  --gray-600:#5a6480; --gray-800:#1e2545;
+  --success:#16a34a; --danger:#dc2626; --warning:#d97706; --info:#2563eb;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--gray-800);}
+a{text-decoration:none;color:inherit;}
+img{max-width:100%;}
+
+/* ── TOPBAR ── */
+.topbar-strip{background:var(--navy);padding:6px 2rem;display:flex;justify-content:space-between;align-items:center;font-size:.75rem;}
+.topbar-strip span{color:rgba(255,255,255,.55);}
+.topbar-strip span i{color:var(--gold);margin-right:5px;}
+.topbar-strip .strip-right{display:flex;gap:1.5rem;}
+
+/* ── NAVBAR ── */
+.navbar{background:var(--white);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:72px;position:sticky;top:0;z-index:1000;box-shadow:0 2px 16px rgba(13,27,62,.12);}
+.navbar-brand{display:flex;align-items:center;}
+.navbar-brand img{height:52px;width:auto;}
+.nav-links{display:flex;align-items:center;gap:.3rem;list-style:none;}
+.nav-links a{color:var(--navy);padding:8px 14px;border-radius:6px;font-size:.875rem;font-weight:500;transition:all .2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--blue2);background:rgba(26,58,143,.07);}
+.nav-cart{background:var(--gold);color:var(--navy)!important;font-weight:700!important;border-radius:8px!important;padding:8px 18px!important;}
+.nav-cart:hover{background:var(--gold2)!important;}
+.badge-cart{background:var(--danger);color:#fff;border-radius:50%;font-size:.65rem;padding:1px 5px;margin-left:3px;}
+.nav-signup{background:var(--navy);color:#fff!important;border-radius:8px!important;}
+.nav-signup:hover{background:var(--blue)!important;}
+
+/* ── FLASH ── */
+.flash-wrap{max-width:1280px;margin:0 auto;padding:0 1.5rem;}
+.alert{padding:11px 18px;border-radius:8px;margin:10px 0;font-size:.875rem;display:flex;align-items:center;gap:8px;}
+.alert-success{background:#dcfce7;color:#14532d;border-left:4px solid var(--success);}
+.alert-danger{background:#fee2e2;color:#7f1d1d;border-left:4px solid var(--danger);}
+.alert-warning{background:#fef3c7;color:#713f12;border-left:4px solid var(--warning);}
+.alert-info{background:#dbeafe;color:#1e3a8a;border-left:4px solid var(--info);}
+
+/* ── FOOTER ── */
+footer{background:var(--navy);color:rgba(255,255,255,.65);padding:4rem 2rem 1.5rem;margin-top:5rem;}
+.footer-grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:2.2fr 1fr 1fr 1.2fr;gap:3rem;}
+.footer-logo img{height:50px;margin-bottom:1rem;}
+.footer-logo p{font-size:.83rem;line-height:1.75;}
+footer h4{color:#fff;font-size:.9rem;font-weight:700;margin-bottom:1rem;letter-spacing:.5px;text-transform:uppercase;}
+footer ul{list-style:none;}
+footer ul li{margin-bottom:.5rem;}
+footer ul li a{font-size:.83rem;transition:color .2s;}
+footer ul li a:hover{color:var(--gold);}
+.footer-contact li{display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:.7rem;}
+.footer-contact li i{color:var(--gold);margin-top:2px;width:14px;flex-shrink:0;}
+.footer-bottom{max-width:1280px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;font-size:.78rem;}
+.social-links{display:flex;gap:.75rem;}
+.social-links a{width:34px;height:34px;background:rgba(255,255,255,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);transition:all .2s;}
+.social-links a:hover{background:var(--gold);color:var(--navy);}
+
+/* ── CHATBOT ── */
+#chat-toggle{position:fixed;bottom:28px;right:28px;width:58px;height:58px;background:linear-gradient(135deg,var(--blue2),var(--navy));border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(26,58,143,.45);z-index:2000;transition:transform .2s;}
+#chat-toggle:hover{transform:scale(1.1);}
+#chat-toggle i{color:#fff;font-size:1.35rem;}
+.chat-dot{position:absolute;top:0;right:0;width:16px;height:16px;background:var(--gold);border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;color:var(--navy);}
+#chat-win{position:fixed;bottom:100px;right:28px;width:375px;background:#fff;border-radius:18px;box-shadow:0 12px 48px rgba(0,0,0,.18);z-index:1999;display:none;flex-direction:column;overflow:hidden;}
+#chat-win.open{display:flex;}
+.chat-head{background:linear-gradient(135deg,var(--navy),var(--blue2));padding:1rem 1.2rem;display:flex;align-items:center;gap:10px;}
+.chat-head .av{width:40px;height:40px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:800;font-size:.95rem;flex-shrink:0;}
+.chat-head .info .n{color:#fff;font-weight:700;font-size:.9rem;}
+.chat-head .info .s{color:rgba(255,255,255,.55);font-size:.72rem;}
+.chat-head .online-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;margin-left:auto;}
+#chat-msgs{padding:1rem;overflow-y:auto;max-height:340px;display:flex;flex-direction:column;gap:.65rem;background:var(--gray-50);}
+.msg{max-width:84%;padding:10px 13px;border-radius:12px;font-size:.83rem;line-height:1.55;white-space:pre-line;}
+.msg.bot{background:#fff;color:var(--gray-800);border-bottom-left-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.07);align-self:flex-start;}
+.msg.user{background:var(--blue2);color:#fff;border-bottom-right-radius:3px;align-self:flex-end;}
+.quick-btns{padding:.6rem 1rem;display:flex;gap:.4rem;flex-wrap:wrap;background:#fff;border-top:1px solid var(--gray-200);}
+.qbtn{background:var(--gray-100);border:1px solid var(--gray-200);border-radius:16px;padding:4px 11px;font-size:.76rem;cursor:pointer;transition:all .2s;font-family:inherit;}
+.qbtn:hover{background:var(--blue2);color:#fff;border-color:var(--blue2);}
+.chat-input-row{display:flex;padding:.7rem 1rem;gap:.5rem;background:#fff;border-top:1px solid var(--gray-200);}
+#chat-inp{flex:1;padding:8px 14px;border:1.5px solid var(--gray-200);border-radius:22px;font-size:.83rem;outline:none;font-family:inherit;}
+#chat-inp:focus{border-color:var(--blue2);}
+#chat-send{width:36px;height:36px;background:var(--blue2);border:none;border-radius:50%;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+#chat-send:hover{background:var(--navy);}
+
+/* ── UTILS ── */
+.container{max-width:1280px;margin:0 auto;padding:0 1.5rem;}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:10px 22px;border-radius:8px;font-size:.875rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none;}
+.btn-primary{background:var(--blue2);color:#fff;}
+.btn-primary:hover{background:var(--navy);}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-gold:hover{background:var(--gold2);}
+.btn-outline{background:transparent;border:2px solid var(--blue2);color:var(--blue2);}
+.btn-outline:hover{background:var(--blue2);color:#fff;}
+.btn-navy{background:var(--navy);color:#fff;}
+.btn-navy:hover{background:var(--blue);}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn-sm{padding:6px 14px;font-size:.78rem;}
+
+.section-head{text-align:center;margin-bottom:2.5rem;}
+.section-head .eyebrow{display:inline-block;color:var(--blue2);font-size:.72rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:.5rem;}
+.section-head h2{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:700;color:var(--navy);}
+.section-head p{color:var(--gray-600);margin-top:.4rem;font-size:.9rem;}
+
+/* ── PRODUCT CARD ── */
+.product-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:transform .22s,box-shadow .22s;display:flex;flex-direction:column;border:1.5px solid var(--gray-200);}
+.product-card:hover{transform:translateY(-5px);box-shadow:0 10px 28px rgba(13,27,62,.13);border-color:var(--blue2);}
+.product-card .img-wrap{height:200px;overflow:hidden;background:var(--gray-100);position:relative;}
+.product-card .img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.product-card:hover .img-wrap img{transform:scale(1.06);}
+.product-card .card-body{padding:1rem;flex:1;display:flex;flex-direction:column;}
+.brand-pill{display:inline-block;background:var(--gray-100);color:var(--gray-600);font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:4px;letter-spacing:.5px;margin-bottom:.4rem;}
+.product-card h3{font-size:.88rem;font-weight:600;color:var(--navy);line-height:1.35;}
+.product-card .price{font-family:'Barlow Condensed',sans-serif;font-size:1.35rem;font-weight:700;color:var(--blue2);margin-top:auto;padding-top:.5rem;}
+.product-card .price small{font-size:.72rem;font-weight:400;color:var(--gray-600);font-family:'Inter',sans-serif;}
+.stock-badge{font-size:.72rem;padding:2px 8px;border-radius:4px;font-weight:600;display:inline-block;}
+.in-stock{background:#dcfce7;color:#14532d;}
+.low-stock{background:#fef3c7;color:#713f12;}
+.out-of-stock{background:#fee2e2;color:#7f1d1d;}
+.product-card .card-footer{padding:.7rem 1rem;border-top:1px solid var(--gray-100);display:flex;gap:.5rem;}
+
+@media(max-width:768px){
+  .footer-grid{grid-template-columns:1fr 1fr;gap:2rem;}
+  .navbar{padding:0 1rem;}
+  .topbar-strip .strip-right{display:none;}
+  #chat-win{width:calc(100vw - 40px);right:20px;}
+}
+</style>
+{% block head %}{% endblock %}
+</head>
+<body>
+
+<!-- TOP STRIP -->
+<div class="topbar-strip">
+  <span><i class="fas fa-phone"></i>+92-300-1234567 &nbsp;|&nbsp; <i class="fas fa-envelope"></i>info@aghabrothers.com</span>
+  <div class="strip-right">
+    <span><i class="fas fa-truck"></i>Free delivery on orders over PKR 25,000</span>
+    <span><i class="fas fa-clock"></i>Mon–Sat 9AM–7PM</span>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="{{ url_for('home') }}" class="navbar-brand">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Agha Brothers">
+  </a>
+  <ul class="nav-links">
+    <li><a href="{{ url_for('home') }}">Home</a></li>
+    <li><a href="{{ url_for('products') }}">Products</a></li>
+    <li><a href="{{ url_for('about') }}">About</a></li>
+    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+    {% if current_user.is_authenticated %}
+      {% if current_user.is_admin %}
+        <li><a href="{{ url_for('admin_dashboard') }}" style="color:var(--gold);font-weight:700;"><i class="fas fa-shield-alt"></i> Admin</a></li>
+      {% else %}
+        <li><a href="{{ url_for('my_orders') }}"><i class="fas fa-box"></i> My Orders</a></li>
+        <li><a href="{{ url_for('cart') }}" class="nav-cart">
+          <i class="fas fa-shopping-cart"></i> Cart
+          {% set cc = current_user.id | cart_count %}{% if cc > 0 %}<span class="badge-cart">{{ cc }}</span>{% endif %}
+        </a></li>
+        <li><a href="{{ url_for('profile') }}"><i class="fas fa-user-circle"></i> {{ current_user.name.split()[0] }}</a></li>
+      {% endif %}
+      <li><a href="{{ url_for('logout') }}" style="color:var(--gray-600);font-size:.82rem;">Logout</a></li>
+    {% else %}
+      <li><a href="{{ url_for('login') }}">Login</a></li>
+      <li><a href="{{ url_for('register') }}" class="nav-signup">Sign Up</a></li>
+    {% endif %}
+  </ul>
+</nav>
+
+<!-- FLASH -->
+<div class="flash-wrap">
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in msgs %}
+      <div class="alert alert-{{ cat }}"><i class="fas fa-circle-info"></i> {{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+</div>
+
+{% block content %}{% endblock %}
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-logo">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Agha Brothers">
+      <p>Pakistan's trusted supplier of industrial and commercial electrical parts & solutions. Authorised dealers for Schneider Electric, Siemens, GE, Philips, Legrand and more.</p>
+      <div class="social-links" style="margin-top:1.2rem;">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-whatsapp"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('products') }}">All Products</a></li>
+        <li><a href="{{ url_for('about') }}">About Us</a></li>
+        <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        <li><a href="{{ url_for('register') }}">Create Account</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Categories</h4>
+      <ul>
+        <li><a href="{{ url_for('products', category=1) }}">Circuit Breakers</a></li>
+        <li><a href="{{ url_for('products', category=2) }}">Cables & Wires</a></li>
+        <li><a href="{{ url_for('products', category=3) }}">Switchgear</a></li>
+        <li><a href="{{ url_for('products', category=4) }}">Motors & Drives</a></li>
+        <li><a href="{{ url_for('products', category=7) }}">Automation & PLCs</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <ul class="footer-contact">
+        <li><i class="fas fa-map-marker-alt"></i><span>Lahore, Punjab, Pakistan</span></li>
+        <li><i class="fas fa-phone"></i><span>+92-300-1234567</span></li>
+        <li><i class="fas fa-envelope"></i><span>info@aghabrothers.com</span></li>
+        <li><i class="fas fa-clock"></i><span>Mon–Sat: 9:00 AM – 7:00 PM</span></li>
+        <li><i class="fab fa-whatsapp"></i><span>WhatsApp same number</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 Agha Brothers Electrical Parts & Solutions. All rights reserved.</p>
+    <p>Made with ⚡ in Lahore, Pakistan</p>
+  </div>
+</footer>
+
+<!-- CHATBOT -->
+<div id="chat-toggle" onclick="toggleChat()">
+  <i class="fas fa-headset"></i>
+  <div class="chat-dot">1</div>
+</div>
+<div id="chat-win">
+  <div class="chat-head">
+    <div class="av">AB</div>
+    <div class="info">
+      <div class="n">Agha Brothers Support</div>
+      <div class="s">⚡ Online – reply instantly</div>
+    </div>
+    <div class="online-dot"></div>
+    <i class="fas fa-times" style="color:rgba(255,255,255,.5);cursor:pointer;margin-left:.5rem;font-size:.9rem;" onclick="toggleChat()"></i>
+  </div>
+  <div id="chat-msgs">
+    <div class="msg bot">👋 <strong>As-salamu alaykum!</strong> Welcome to Agha Brothers Electrical Parts & Solutions!<br><br>I'm your virtual assistant. Ask me anything about products, prices, orders, or delivery. ⚡</div>
+  </div>
+  <div class="quick-btns">
+    <button class="qbtn" onclick="quickSend('Circuit Breakers')">Circuit Breakers</button>
+    <button class="qbtn" onclick="quickSend('Cable prices')">Cables</button>
+    <button class="qbtn" onclick="quickSend('How to order')">How to Order</button>
+    <button class="qbtn" onclick="quickSend('Delivery info')">Delivery</button>
+    <button class="qbtn" onclick="quickSend('Contact info')">Contact</button>
+  </div>
+  <div class="chat-input-row">
+    <input type="text" id="chat-inp" placeholder="Type your question..." onkeypress="if(event.key==='Enter')sendChat()">
+    <button id="chat-send" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+  </div>
+</div>
+<script>
+function toggleChat(){
+  const w=document.getElementById('chat-win');
+  w.classList.toggle('open');
+  document.querySelector('.chat-dot').style.display='none';
+}
+
+function quickSend(t){
+  document.getElementById('chat-inp').value=t;
+  sendChat();
+}
+
+async function sendChat(){
+  const inp=document.getElementById('chat-inp');
+  const msg=inp.value.trim();
+  if(!msg) return;
+
+  const box=document.getElementById('chat-msgs');
+
+  // Append user message
+  const userDiv = document.createElement('div');
+  userDiv.className = 'msg user';
+  userDiv.textContent = msg;
+  box.appendChild(userDiv);
+
+  inp.value = '';
+
+  // Append typing indicator with unique ID
+  const typingId = 'typing-' + Date.now();
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'msg bot';
+  typingDiv.id = typingId;
+  typingDiv.textContent = '⋯';
+  box.appendChild(typingDiv);
+  box.scrollTop = box.scrollHeight;
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg })
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    const reply = data.response || 'Sorry, I did not understand that.';
+
+    // Replace typing indicator with actual reply
+    const el = document.getElementById(typingId);
+    if (el) {
+      el.innerHTML = reply;
+    } else {
+      // fallback: append new bot message
+      const botDiv = document.createElement('div');
+      botDiv.className = 'msg bot';
+      botDiv.innerHTML = reply;
+      box.appendChild(botDiv);
+    }
+  } catch (err) {
+    console.error('Chat error:', err);
+    const el = document.getElementById(typingId);
+    if (el) {
+      el.textContent = '⚠️ Sorry, I am temporarily unavailable.';
+    }
+  }
+  box.scrollTop = box.scrollHeight;
+}
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
