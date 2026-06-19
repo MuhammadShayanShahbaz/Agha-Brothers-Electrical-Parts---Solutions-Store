@@ -1,1 +1,2 @@
-agha_brothers/templates linguist-detectable=false
+templates/**/*.html linguist-generated=true
+templates/**/*.html linguist-vendored
